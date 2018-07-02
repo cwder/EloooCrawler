@@ -23,7 +23,7 @@ from Bean.league import League
 #     item = League(url,name)
 #     print(item.__dict__)
 #     league_list.append(item)
-from Parser.leagu_parser import LeaguParser
+from Parser.data_parser import LeaguParser
 
 LeaguParser.league_list()
 
