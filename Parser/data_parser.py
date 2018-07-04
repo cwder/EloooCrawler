@@ -25,33 +25,41 @@ class DataParser():
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
         }
+
         requests.adapters.DEFAULT_RETRIES = 5
-        respone = requests.get("http://zq.win007.com/jsData/leftData/leftData.js", timeout=10, headers=headers)
+        respone = requests.get(const.league_url, timeout=10, headers=headers)
         html = respone.text
         s = requests.session()
+
         s.keep_alive = False
-        # print(html)
-        # soup = BeautifulSoup(html, "lxml")
-        # games_jq_list = soup.select('.left_list3')
-        # print(games_jq_list)
+        lea_arr = html.replace('var arrArea = new Array();','')
+        arrArea = [0] * 6;
+        exec (lea_arr);
+        contry_w = []
+        for i in range(len(arrArea)):
+            for j in range(len(arrArea[i])):
+                contry_w.append(arrArea[i][j])
+        contry = []
+        for i in range(len(contry_w)):
+            contry.append(contry_w[i][4])
 
-        # league_list = []
-        # for game in games_jq_list:
-        #     url = const.root_url + game.find('dt').find('a').get('href').strip()
-        #     name = game.text.strip()
-        #     item = League(url, name)
-        #     print(item.__dict__)
-        #     league_list.append(item)
-
-        # league = dict()
-        # for game in games_jq_list:
-        #     url = const.root_url + game.find('dt').find('a').get('href').strip()
-        #     name = game.text.strip()
-        #     league[name] = url
+        league_list = []
+        for i in range(len(contry)):
+            for j in range(len(contry[i])):
+                league_list.append(contry[i][j])
 
 
+        return league_list
 
-        return html
+    @staticmethod
+    def get_league_id(name):
+        contry = DataParser.league_list()
+
+        for i in range(len(contry)):
+            if name in contry[i]:
+                return contry[i]
+
+
 
 
     #球队列表
@@ -87,8 +95,7 @@ class DataParser():
 
 
 if __name__ == '__main__':
-    print("aaa")
-    print(DataParser.league_list())
+    print(DataParser.get_league_id("英超")[0])
 
 
 
