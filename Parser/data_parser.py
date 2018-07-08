@@ -55,6 +55,66 @@ class DataParser():
 
     # 根据名字获取联赛url
     @staticmethod
+    def get_base_list():
+        contry = DataParser.league_list()
+
+        data = []
+
+        for i in range(len(contry)):
+            if i == 0:
+                url = const.root_first_league_url + str(contry[i][0]) + ".html"
+            else:
+                url = const.root_sub_league_url + str(contry[i][0]) + ".html"
+
+            team = []
+            team.append(contry[i][1]);
+            team.append(url)
+            data.append(team)
+
+
+        return data
+
+    # 球队列表
+    @staticmethod
+    def get_team_list(url):
+        headers = {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+            "Host": "zq.win007.com",
+            "Referer": "http://zq.win007.com/cn/League/36.html",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+
+        }
+
+        requests.adapters.DEFAULT_RETRIES = 5
+        response = requests.get(url, timeout=10, headers=headers)
+
+        response.encoding = 'utf8'
+        html = response.text
+        a = re.search(r"/jsData/matchResult(.+?)>", html)
+
+        url = (const.root_url + a.group())[:-2];
+
+        response_teams = requests.get(url, timeout=10, headers=headers)
+        team_html = response_teams.text
+        data = team_html.split(";")
+
+        team_data = []
+        for i in range(len(data)):
+            if "var arrTeam" in data[i]:
+                team_data = data[i]
+                break
+
+        team_data = team_data.replace("var arrTeam = ", "").strip()
+        arr = eval(team_data)
+
+        return arr
+
+    # 根据名字获取联赛url
+    @staticmethod
     def get_league_id(name):
         contry = DataParser.league_list()
 
@@ -65,7 +125,6 @@ class DataParser():
                 else:
                     url = const.root_sub_league_url + str(contry[i][0]) + ".html"
                 return url
-
 
 
     #球队列表
@@ -179,8 +238,6 @@ class DataParser():
                 win = 0
 
             data.append(TeamFight(win,home,insite,outside,time_info))
-        # for i in range(len(data)):
-        #     print(data[i].__dict__)
 
         return data
 
@@ -216,10 +273,13 @@ class DataParser():
 
 if __name__ == '__main__':
     # DataParser.parse_team("伯恩茅斯")
-    timestring = '2016-12-21 10:22:56'
+    # DataParser.parse_score_list()
+    arr = DataParser.get_base_list()
 
-    # print (time.mktime(time.strptime(timestring, '%Y-%m-%d %H:%M:%S')))  # 1482286976.0
-    DataParser.parse_score_list()
+    for i in range(len(arr[:3])):
+        url = arr[i][1]
+        print(DataParser.get_team_list(url))
+
 
 
 
