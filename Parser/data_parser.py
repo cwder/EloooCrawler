@@ -1,14 +1,13 @@
 import json
 import re
+import time
 import urllib
 from urllib import request
 
 import numpy as np
 import requests
-from bs4 import BeautifulSoup
 
-from Bean.league import League
-from Bean.team import Team
+from Bean.team_fight_bean import TeamFight
 from Public import const
 
 
@@ -108,49 +107,119 @@ class DataParser():
         team_data = team_data.replace("var arrTeam = ","").strip()
         arr = eval(team_data)
 
-        print(arr[0])
-
-
-        # for i in range(len(team_data)):
-        #     print(team_data[i])
-
-        # print(data[1])
-
-
-
-        #
-        #
-        # soup = BeautifulSoup(html, "html.parser")
-        # j = soup.find_all("script")
-        # print(html)
-
-
-        # team_list = soup.find_all(class_ = 'f_l leftSide')
-        # # print(team_list)
-        # team = []
-        # for item in team_list[0].select('.tabGroup')[0].select('.acc_container')[1].\
-        # select('.block')[0].select('.clearfix')[0].find_all('a'):
-        #     # aa[const.root_url + item.get('href')] = item.text
-        #     team.append(Team((const.root_url + item.get('href')),item.text,league_name))
-        # return team
+        return arr
 
     @staticmethod
-    def play_list(url = '/team/111/'):
-        url = const.root_url + url
-        response  = requests.get(url)
+    def get_team_socre_url(name ="阿森纳"):
+        arr = DataParser.team_list("英超")
+        url = "";
+        for i in range(len(arr)):
+            if name in arr[i]:
+                url = const.team_url.format(arr[i][0])
+                break
+
+        return url
+
+
+    @staticmethod
+    def get_team_score_list(name ="阿森纳"):
+        url = DataParser.get_team_socre_url(name)
+
+        headers = {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+            "Host": "zq.win007.com",
+            "Referer": "http://zq.win007.com/cn/League/36.html",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+
+        }
+
+        requests.adapters.DEFAULT_RETRIES = 5
+        response = requests.get(url, timeout=10, headers=headers)
+
         response.encoding = 'utf8'
         html = response.text
-        soup = BeautifulSoup(html, "html.parser")
-        game_list = soup.select('#jq_team_tbody')[0].select('.')
-        # print(game_list)
+
+        a = re.search(r"/jsData/teamInfo(.+?)>", html)
+        url = (const.root_url + a.group())[:-2];
+        response = requests.get(url, timeout=10, headers=headers)
+        response.encoding = 'utf8'
+        js_html = response.text
+        data = js_html.split(";")
+        for i in range(len(data)):
+           if "teamCount" in data[i]:
+               team_data = data[i].replace("var teamCount = ", "").strip()
+               arr = eval(team_data)
+               break
+
+        data = []
+        for i in range(len(arr)):
+            team_array = arr[i]
+
+            timestring = arr[i][3]
+            time_info = time.strptime(timestring, "%Y-%m-%d %H:%M")
+            if name in team_array[7]:
+                home = 1
+                insite = int(team_array[9])
+                outside = int(team_array[10])
+
+            else:
+                home = 0
+                insite = int(team_array[10])
+                outside = int(team_array[9])
+
+            if insite > outside:
+                win = 3
+            elif insite == outside:
+                win = 1
+            else:
+                win = 0
+
+            data.append(TeamFight(win,home,insite,outside,time_info))
+        # for i in range(len(data)):
+        #     print(data[i].__dict__)
+
+        return data
+
+    @staticmethod
+    def parse_score_list(name ="阿森纳"):
+        arr = DataParser.get_team_score_list()
+        count_one = 0;
+        count_two = 0;
+        count_three = 0;
+        index = 0
+        error_count = 0;
+
+        for i in range(len(arr[:20])):
+            if arr[i].win != 3:
+                error_count = error_count+1;
+
+            else:
+                if error_count == 1:
+                    count_one = count_one + 1
+                if error_count == 2:
+                    count_two = count_two + 1
+                if error_count == 3:
+                    count_three = count_three + 1
+                error_count = 0;
+
+
+        print(count_one)
+        print(count_two)
+        print(count_three)
 
 
 
 
 if __name__ == '__main__':
-    print(DataParser.team_list())
+    # DataParser.parse_team("伯恩茅斯")
+    timestring = '2016-12-21 10:22:56'
 
-
+    # print (time.mktime(time.strptime(timestring, '%Y-%m-%d %H:%M:%S')))  # 1482286976.0
+    DataParser.parse_score_list()
 
 
 
