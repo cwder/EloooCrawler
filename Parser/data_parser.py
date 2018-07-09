@@ -179,9 +179,13 @@ class DataParser():
 
         return url
 
+    @staticmethod
+    def get_team_url(id):
+        url = const.team_url.format(id)
+        return url
 
     @staticmethod
-    def get_team_score_list(name ="阿森纳"):
+    def get_team_score_list(name):
         url = DataParser.get_team_socre_url(name)
 
         headers = {
@@ -243,11 +247,10 @@ class DataParser():
 
     @staticmethod
     def parse_score_list(name ="阿森纳"):
-        arr = DataParser.get_team_score_list()
+        arr = DataParser.get_team_score_list(name)
         count_one = 0;
         count_two = 0;
         count_three = 0;
-        index = 0
         error_count = 0;
 
         for i in range(len(arr[:20])):
@@ -268,17 +271,41 @@ class DataParser():
         print(count_two)
         print(count_three)
 
+    # 完整解析
+    @staticmethod
+    def full_parse():
+
+       league_list = DataParser.get_base_list();
+
+       league_list = league_list[:3]
+
+       for i in range(len(league_list)):
+           arr = DataParser.get_team_list(league_list[i][1])
+           for j in range(len(arr)):
+               DataParser.parse_score_list(arr[j][1])
+               print(arr[j][1])
+
+       # print(league_list)
+       pass
+
 
 
 
 if __name__ == '__main__':
     # DataParser.parse_team("伯恩茅斯")
     # DataParser.parse_score_list()
-    arr = DataParser.get_base_list()
+    # arr = DataParser.get_base_list()
+    # data = []
+    # for i in range(len(arr[:3])):
+    #     url = arr[i][1]
+    #     arr_1 = DataParser.get_team_list(url);
+    #     for j in range(len(arr_1)):
+    #         array = []
+    #         array.append(arr_1[j][1])
+    #         array.append(DataParser.get_team_url(arr_1[j][0]))
+    #         data.append(array)
+    DataParser.full_parse()
 
-    for i in range(len(arr[:3])):
-        url = arr[i][1]
-        print(DataParser.get_team_list(url))
 
 
 
