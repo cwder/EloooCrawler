@@ -121,11 +121,21 @@ class EngGuan(Base):
 
 if __name__ == '__main__':
     arr_teams = EngGuan.gets_teams()
-    id = arr_teams[:1][0][0]
-    name = arr_teams[:1][0][1]
-    print(name)
-    text = EngGuan.gets_a_team_datas(id,name)
-    print(EngGuan.parse_team_123(text))
+    for info in arr_teams:
+        text = EngGuan.gets_a_team_datas(info[0],info[1])
+        print(info[1])
+        print(EngGuan.parse_team_123(text))
+        time.sleep(6)
+    #     print(arr_teams[i][0])
+    # for i in arr_teams[:1]:
+    #     print(arr_teams[:1][i][0])
+    #     print(arr_teams[:1][i][1])
+    # id = arr_teams[:1][0][0]
+    # name = arr_teams[:1][0][1]
+    # print(id)
+    # print(name)
+    # text = EngGuan.gets_a_team_datas(id,name)
+    # print(EngGuan.parse_team_123(text))
 
 
     # for i in range(len(text)):
