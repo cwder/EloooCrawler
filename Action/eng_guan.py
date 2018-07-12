@@ -2,14 +2,18 @@ import re
 
 import time
 
-from Action.base import Base
+
+from Action.Base import Base
 from Bean.team_fight_bean import TeamFight
+from Parser.game_parser import Parse
 from Public import const
 
 
 class EngGuan(Base):
+    # 英冠联赛的url
     url = "http://zq.win007.com/cn/SubLeague/37.html"
 
+    # 英冠联赛所有队
     @classmethod
     def gets_teams(cls):
 
@@ -124,8 +128,9 @@ if __name__ == '__main__':
     for info in arr_teams:
         text = EngGuan.gets_a_team_datas(info[0],info[1])
         print(info[1])
-        print(EngGuan.parse_team_123(text))
-        time.sleep(6)
+        print(Parse().parse_team_123(text))
+
+
     #     print(arr_teams[i][0])
     # for i in arr_teams[:1]:
     #     print(arr_teams[:1][i][0])
