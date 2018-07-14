@@ -1,5 +1,6 @@
 import re
 import time
+from copy import deepcopy
 
 import requests
 
@@ -58,33 +59,48 @@ class Base:
                 if error_count == 0:
                     continue
                 key = str(error_count) + "场不胜次数"
-                value = result.get(error_count,0)
+                value = result.get(key,0)
                 value = value + 1
-                result[error_count] = value
+                result[key] = value
                 error_count = 0
 
-        # result2 = result
-        # keys = sorted(result2)
-        # for i in range(len(keys)):
-        #     self.cal_percent(result2)
-        #     result2.pop(keys[i])
+        result2 = deepcopy(result)
+        keys = sorted(result2)
+        for i in range(len(keys)):
+            self.cal_percent(result2)
+            result2.pop(keys[i])
+
 
 
         return result
 
 
     def cal_percent(self,data):
+
+        # keys = sorted(data)
+        # for i in range(len(keys)):
+        #     self.cal_percent(data)
+        #     data.pop(keys[i])
+        res = 0
+        count = 0
         keys = sorted(data)
         core = 0;
         others = 0;
         for i in range(len(keys)):
-            if i == 0 :
-               core = data[keys[i]];
-            else :
-               sum = data[keys[i]]
-               others = others + sum;
+            if i == 0:
+                core = data[keys[i]];
 
-        print(keys[0],"   core: " , core,"others: " , others)
+                if (len(keys) == 1):
+                    res = core / core
+
+            else:
+                sum = data[keys[i]]
+                others = others + sum;
+                count = core + others;
+                res = core / count
+
+        print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (res * 100))
+        print("====")
         return (core,others)
 
 
