@@ -12,7 +12,7 @@ class FenChao(Base):
         for info in arr_teams:
             text = cls.gets_a_team_datas(info[0], info[1])
             print(info[1])
-            print(cls.parse_team_123(text))
+            print(text)
 
     @classmethod
     def parse_one_more(cls):
@@ -25,4 +25,4 @@ class FenChao(Base):
 
 
 if __name__ == '__main__':
-    FenChao.parse_one_more()
+    FenChao.parse_list()

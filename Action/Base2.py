@@ -11,14 +11,14 @@ class Base:
 
 
     # 获取所以球队所有战绩列表
-    def get_team_array(self,url):
-        resp = self.gets_response(url)
+    def get_team_array(self):
+        resp = cls.gets_response(cls.url)
         html = resp.text
         js = re.search(r"/jsData/matchResult(.+?)>", html)
 
         url = (const.root_url + js.group())[:-2];
 
-        response_teams = self.gets_response(url)
+        response_teams = cls.gets_response(url)
         team_html = response_teams.text
         data = team_html.split(";")
 
@@ -33,59 +33,13 @@ class Base:
         team_dict = {}
 
         for info in teams:
-            text = self.gets_a_team_datas(info[0], info[1])
+            text = cls.gets_a_team_datas(info[0], info[1])
             team_dict[info[1]] = text
 
 
         return team_dict
 
 
-    def parse_team(self, array):
-
-
-        error_count = 0;
-        flag = False
-
-        result = {}
-        for i in range(len(array)):
-            if array[i].win != 3:
-                if flag == False:
-                    continue
-                error_count = error_count + 1;
-
-            else:
-                flag = True
-                if error_count == 0:
-                    continue
-                key = str(error_count) + "场不胜次数"
-                value = result.get(error_count,0)
-                value = value + 1
-                result[error_count] = value
-                error_count = 0
-
-        # result2 = result
-        # keys = sorted(result2)
-        # for i in range(len(keys)):
-        #     self.cal_percent(result2)
-        #     result2.pop(keys[i])
-
-
-        return result
-
-
-    def cal_percent(self,data):
-        keys = sorted(data)
-        core = 0;
-        others = 0;
-        for i in range(len(keys)):
-            if i == 0 :
-               core = data[keys[i]];
-            else :
-               sum = data[keys[i]]
-               others = others + sum;
-
-        print(keys[0],"   core: " , core,"others: " , others)
-        return (core,others)
 
 
 
@@ -114,15 +68,15 @@ class Base:
         return teams
 
     # 一只球队的所有战绩表
-
-    def gets_a_team_datas(self, id, name):
+    @classmethod
+    def gets_a_team_datas(cls, id, name):
         url = const.team_url.format(id)
-        resp = self.gets_response(url)
+        resp = cls.gets_response(url)
         html = resp.text
 
         a = re.search(r"/jsData/teamInfo(.+?)>", html)
         url2 = (const.root_url + a.group())[:-2];
-        response = self.gets_response(url2)
+        response = cls.gets_response(url2)
         response.encoding = 'utf8'
         js_html = response.text
         data = js_html.split(";")
@@ -140,13 +94,11 @@ class Base:
             timestring = arr[i][3]
             time_info = time.strptime(timestring, "%Y-%m-%d %H:%M")
             if name in team_array[7]:
-                d_name = team_array[8].split('^')[0]
                 home = 1
                 insite = int(team_array[9])
                 outside = int(team_array[10])
 
             else:
-                d_name = team_array[7].split('^')[0]
                 home = 0
                 insite = int(team_array[10])
                 outside = int(team_array[9])
@@ -158,12 +110,12 @@ class Base:
             else:
                 win = 0
 
-            data.append(TeamFight(name, d_name,win, home, insite, outside, time_info))
+            data.append(TeamFight(name, win, home, insite, outside, time_info))
 
         return data
 
-
-    def gets_response(self,url):
+    @classmethod
+    def gets_response(cls,url):
         headers = {
             "Accept": "*/*",
             "Accept-Encoding": "gzip, deflate",
@@ -197,16 +149,16 @@ class Base:
 
     # 解析球队的战绩表,array 是一个联赛集合 tfb对象
     # 1，2，3，4，5场不胜后取胜的次数
-    def parse_team_1234567(self, array):
+    @classmethod
+    def parse_team_123(cls, array):
         count_one = 0;
         count_two = 0;
         count_three = 0;
         count_four = 0;
         count_five = 0;
-        count_six = 0;
-        count_seven = 0;
         error_count = 0;
         flag = False
+        test = array[:50]
         for i in range(len(array)):
             if array[i].win != 3:
                 if flag == False:
@@ -225,13 +177,9 @@ class Base:
                     count_four = count_four + 1
                 if error_count == 5:
                     count_five = count_five + 1
-                if error_count == 6:
-                    count_six = count_six + 1
-                if error_count == 7:
-                    count_seven = count_seven + 1
                 error_count = 0;
 
-        return (count_one, count_two, count_three, count_four, count_five,count_six,count_seven)
+        return (count_one, count_two, count_three, count_four, count_five)
 
 
     # 比较一只球队一胜，跟连胜次数
