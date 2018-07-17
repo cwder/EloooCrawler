@@ -58,10 +58,10 @@ class Base:
                 flag = True
                 if error_count == 0:
                     continue
-                key = str(error_count) + "场不胜次数"
-                value = result.get(key,0)
+                # key = str(error_count) + "场不胜次数"
+                value = result.get(error_count,0)
                 value = value + 1
-                result[key] = value
+                result[error_count] = value
                 error_count = 0
 
         result2 = deepcopy(result)
@@ -71,6 +71,36 @@ class Base:
             result2.pop(keys[i])
 
 
+
+        return result
+
+    def parse_fail_team(self, array):
+
+        error_count = 0;
+        flag = False
+
+        result = {}
+        for i in range(len(array)):
+            if array[i].win != 0:
+                if flag == False:
+                    continue
+                error_count = error_count + 1;
+
+            else:
+                flag = True
+                if error_count == 0:
+                    continue
+                key = str(error_count) + "场不败次数"
+                value = result.get(error_count, 0)
+                value = value + 1
+                result[error_count] = value
+                error_count = 0
+
+        result2 = deepcopy(result)
+        keys = sorted(result2)
+        for i in range(len(keys)):
+            self.cal_percent(result2)
+            result2.pop(keys[i])
 
         return result
 
@@ -86,7 +116,10 @@ class Base:
         keys = sorted(data)
         core = 0;
         others = 0;
+        a = 0;
+        a2 = 0;
         for i in range(len(keys)):
+
             if i == 0:
                 core = data[keys[i]];
 
@@ -99,8 +132,16 @@ class Base:
                 count = core + others;
                 res = core / count
 
-        print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (res * 100))
+                s = (keys[i] - keys[0]) * sum;
+                a = s + a
+                # a2 = core / a ;
+        a2 = core / (a + core)
+        if a2 == 0:
+            a2 = 1
+
+        print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (res * 100),"全数：",a,"全百分比",'%.2f%%' % (a2 * 100))
         print("====")
+
         return (core,others)
 
 
