@@ -46,11 +46,15 @@ class Base:
 
         error_count = 0;
         flag = False
-
+        is_suc_flag = False;
+        # 目前保持不胜的场次
+        begin_fail_couint = 0
         result = {}
         for i in range(len(array)):
             if array[i].win != 3:
                 if flag == False:
+                    is_suc_flag = True
+                    begin_fail_couint = begin_fail_couint + 1
                     continue
                 error_count = error_count + 1;
 
@@ -66,7 +70,15 @@ class Base:
 
         result2 = deepcopy(result)
         keys = sorted(result2)
+
+        if is_suc_flag:
+            print("该队可统计马上会胜的可能性，已",begin_fail_couint,"场不胜,百分比越高表示胜的可能越大")
+
         for i in range(len(keys)):
+
+            if keys[i] == begin_fail_couint:
+                print("统计这次信息：")
+
             self.cal_percent(result2)
             result2.pop(keys[i])
 
@@ -78,12 +90,17 @@ class Base:
 
         error_count = 0;
         flag = False
-
+        is_fail_flag = False;
+        # 目前保持不败的场次
+        begin_no_fail_couint = 0
         result = {}
         for i in range(len(array)):
             if array[i].win != 0:
                 if flag == False:
+                    is_fail_flag = True
+                    begin_no_fail_couint = begin_no_fail_couint + 1
                     continue
+                # 代表不败的表式值：n场不败统计
                 error_count = error_count + 1;
 
             else:
@@ -92,13 +109,22 @@ class Base:
                     continue
                 key = str(error_count) + "场不败次数"
                 value = result.get(error_count, 0)
+                # 代表表式值次数：n场不败的次数
                 value = value + 1
                 result[error_count] = value
                 error_count = 0
-
+        # 复制一个
         result2 = deepcopy(result)
+        # 因为key是不败的表式值，从小到大排下序
         keys = sorted(result2)
+        if is_fail_flag:
+            print("该队可统计马上会败的可能性，已",begin_no_fail_couint,"场不败,百分比越高表示败的可能越大")
         for i in range(len(keys)):
+            # 当i为0时，统计keys[0]=1场不败次数。。。n场不败次数
+            # 当i为1时，统计keys[1]=2场不败次数。。。n场不败次数
+
+            if keys[i] == begin_no_fail_couint:
+                print("统计这次信息：")
             self.cal_percent(result2)
             result2.pop(keys[i])
 
