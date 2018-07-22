@@ -43,7 +43,7 @@ class Base:
 
     def parse_team(self, array):
 
-
+        print("解析比赛数量",len(array))
         error_count = 0;
         flag = False
         is_suc_flag = False;
@@ -74,12 +74,16 @@ class Base:
         if is_suc_flag:
             print("该队可统计马上会胜的可能性，已",begin_fail_couint,"场不胜,百分比越高表示胜的可能越大")
 
+            if (begin_fail_couint > keys[-1]):
+                print("该队处于破记录中，可考虑投")
+
+
         for i in range(len(keys)):
 
-            if keys[i] == begin_fail_couint:
-                print("统计这次信息：")
+            # if keys[i] == begin_fail_couint:
+            #     print("统计这次信息：")
 
-            self.cal_percent(result2)
+            self.cal_percent(result2,begin_fail_couint)
             result2.pop(keys[i])
 
 
@@ -87,6 +91,7 @@ class Base:
         return result
 
     def parse_fail_team(self, array):
+        print("解析比赛数量", len(array))
 
         error_count = 0;
         flag = False
@@ -119,31 +124,35 @@ class Base:
         keys = sorted(result2)
         if is_fail_flag:
             print("该队可统计马上会败的可能性，已",begin_no_fail_couint,"场不败,百分比越高表示败的可能越大")
+
+            if (begin_no_fail_couint > keys[-1]):
+                print("该队处于破记录中，可考虑投")
+
         for i in range(len(keys)):
             # 当i为0时，统计keys[0]=1场不败次数。。。n场不败次数
             # 当i为1时，统计keys[1]=2场不败次数。。。n场不败次数
 
-            if keys[i] == begin_no_fail_couint:
-                print("统计这次信息：")
-            self.cal_percent(result2)
+
+            self.cal_percent(result2,begin_no_fail_couint)
             result2.pop(keys[i])
 
         return result
 
 
-    def cal_percent(self,data):
+    def cal_percent(self,data,final_data):
 
         # keys = sorted(data)
         # for i in range(len(keys)):
         #     self.cal_percent(data)
         #     data.pop(keys[i])
         res = 0
-        count = 0
         keys = sorted(data)
         core = 0;
         others = 0;
         a = 0;
-        a2 = 0;
+        # 符合条件是胜负场序号
+        result_list = []
+
         for i in range(len(keys)):
 
             if i == 0:
@@ -161,14 +170,17 @@ class Base:
                 s = (keys[i] - keys[0]) * sum;
                 a = s + a
                 # a2 = core / a ;
-        a2 = core / (a + core)
-        if a2 == 0:
+        full_res = core / (a + core)
+        if full_res == 0:
             a2 = 1
 
-        print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (res * 100),"全数：",a,"全百分比",'%.2f%%' % (a2 * 100))
+        if res >= 0.4 or full_res >= 0.4:
+            if final_data == keys[0]:
+                print("以下可以进入判断条件：")
+        print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (res * 100),"全数：",a,"全百分比",'%.2f%%' % (full_res * 100))
         print("====")
 
-        return (core,others)
+        return (keys[0],res,full_res)
 
 
 
