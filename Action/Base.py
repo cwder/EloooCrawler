@@ -174,7 +174,7 @@ class Base:
         if full_res == 0:
             a2 = 1
 
-        if res >= 0.4 or full_res >= 0.4:
+        if res >= 0.6 or full_res >= 0.4:
             if final_data == keys[0]:
                 print("以下可以进入判断条件：")
         print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (res * 100),"全数：",a,"全百分比",'%.2f%%' % (full_res * 100))
