@@ -11,7 +11,7 @@ from Public import const
 class Base:
 
 
-    # 获取所以球队所有战绩列表
+    # 获取所以球队所有战绩列表,获取球队名，球队战绩的map
     def get_team_array(self,url):
         resp = self.gets_response(url)
         html = resp.text
@@ -41,51 +41,76 @@ class Base:
         return team_dict
 
 
-    def parse_team(self, array):
+    def parse_no_win_goal(self, array):
+        no_win_count = 0;
+        have_goal_game = 0;
+        for info in array:
+            if info.win == 0:
+                no_win_count = no_win_count + 1
+                if info.insite > 0:
+                    have_goal_game = have_goal_game + 1
 
+
+        res = have_goal_game / no_win_count
+        print("输球总场次：",no_win_count,"  ","输球进球场：",have_goal_game," 百分比： ",'%.2f%%' % (res * 100))
+
+    
+    # 判断球队在不胜的时侯，有多少概率胜
+    def parse_team(self, array):
         print("解析比赛数量",len(array))
+        # 需要统计的失败数量
         error_count = 0;
-        flag = False
+        # 是否是第一次循环
+        isFirst = True
+        # 当前的战绩是否可以直接进行下一场的预测
         is_suc_flag = False;
         # 目前保持不胜的场次
-        begin_fail_couint = 0
+        begin_fail_count = 0
         result = {}
         for i in range(len(array)):
+            # 如果没有赢
             if array[i].win != 3:
-                if flag == False:
+                # 如果是第一次统计
+                if isFirst :
+                    # 当前最新一场都没胜，可以进行是否赢的统计了
                     is_suc_flag = True
-                    begin_fail_couint = begin_fail_couint + 1
+                    # 把最新的不胜次数统计次数加一
+                    begin_fail_count = begin_fail_count + 1
                     continue
+                # 统计一下总的不胜场次
                 error_count = error_count + 1;
 
             else:
-                flag = True
+                # 说明已经有胜场了，begin_fail_count参数停止统计
+                isFirst = False
+                # 在胜场的情况下如果之前的error_count为0，表明之前也是胜，不统计不胜次数
                 if error_count == 0:
                     continue
                 # key = str(error_count) + "场不胜次数"
+                # 以不胜场次，不胜场次出现的次数，建立map
                 value = result.get(error_count,0)
                 value = value + 1
                 result[error_count] = value
+                
+                # 将计数清零
                 error_count = 0
-
+        
+        # 复制一个（不胜场，不胜场次数）的map
         result2 = deepcopy(result)
+        # 把key = 不胜场，进行排列
         keys = sorted(result2)
-
+        # 如果可以进行赢球统计：
         if is_suc_flag:
-            print("该队可统计马上会胜的可能性，已",begin_fail_couint,"场不胜,百分比越高表示胜的可能越大")
-
-            if (begin_fail_couint > keys[-1]):
+            print("该队可统计马上会胜的可能性，已",begin_fail_count,"场不胜,百分比越高表示胜的可能越大")
+            # 统计到的不胜场次，大于最大的统计后不胜场次
+            if (begin_fail_count > keys[-1]):
                 print("该队处于破记录中，可考虑投")
 
-
+        # 统计每个不胜场的百分比
         for i in range(len(keys)):
-
-            # if keys[i] == begin_fail_couint:
-            #     print("统计这次信息：")
-
-            self.cal_percent(result2,begin_fail_couint)
+            
+            self.cal_percent(result2,begin_fail_count)
             result2.pop(keys[i])
-
 
 
         return result
@@ -118,7 +143,7 @@ class Base:
                 value = value + 1
                 result[error_count] = value
                 error_count = 0
-        # 复制一个
+        # 复制一个{不败场次，不败场次数}的map
         result2 = deepcopy(result)
         # 因为key是不败的表式值，从小到大排下序
         keys = sorted(result2)
@@ -139,48 +164,50 @@ class Base:
         return result
 
 
+    # data：{不败场次，不败场次数}的map
+    # final_data：现有的最大场
     def cal_percent(self,data,final_data):
-
-        # keys = sorted(data)
-        # for i in range(len(keys)):
-        #     self.cal_percent(data)
-        #     data.pop(keys[i])
-        res = 0
+        # 按胜场类型区分的百分比
+        count_percent = 0
+        # 按特性场次，进行排序
         keys = sorted(data)
-        core = 0;
+        # 符合条件的场次
+        core_data = 0;
+        # 其他不符合条件的场次
         others = 0;
-        a = 0;
+        # 全量计算里不符合条件的所有场次
+        no_match_full_data = 0;
         # 符合条件是胜负场序号
         result_list = []
 
         for i in range(len(keys)):
 
             if i == 0:
+                # 第一个统计场次的数量
                 core = data[keys[i]];
 
                 if (len(keys) == 1):
-                    res = core / core
+                    count_percent = core / core
 
             else:
                 sum = data[keys[i]]
                 others = others + sum;
                 count = core + others;
-                res = core / count
+                count_percent = core / count
 
                 s = (keys[i] - keys[0]) * sum;
-                a = s + a
-                # a2 = core / a ;
-        full_res = core / (a + core)
-        if full_res == 0:
-            a2 = 1
+                no_match_full_data = s + no_match_full_data
 
-        if res >= 0.6 or full_res >= 0.4:
+
+        full_res = core / (no_match_full_data + core)
+
+        if count_percent >= 0.6 or full_res >= 0.4:
             if final_data == keys[0]:
                 print("以下可以进入判断条件：")
-        print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (res * 100),"全数：",a,"全百分比",'%.2f%%' % (full_res * 100))
+        print(keys[0], "   core: ", core, "others: ", others," 百分比：",'%.2f%%' % (count_percent * 100),"全数：",no_match_full_data,"全百分比",'%.2f%%' % (full_res * 100))
         print("====")
 
-        return (keys[0],res,full_res)
+        return (keys[0],count_percent,full_res)
 
 
 
