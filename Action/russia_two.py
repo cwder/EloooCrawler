@@ -1,15 +1,15 @@
 from Action.Base import Base
 
 
-class RussuiaChao(Base):
-    url = "http://zq.win007.com/cn/SubLeague/10.html"
+class RussuiaTwo(Base):
+    url = "http://zq.win007.com/cn/SubLeague/235.html"
 
     def __init__(self):
         self.team_dict = self.get_team_array(self.url)
 
 if __name__ == "__main__":
 
-    kk = RussuiaChao()
+    kk = RussuiaTwo()
 
     for k , v in kk.team_dict.items():
         print(k)
