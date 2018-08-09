@@ -1,7 +1,7 @@
 from Action.Base import Base
 
 
-class AgentingOne(Base):
+class SuChao(Base):
     url = "http://zq.win007.com/cn/League/29.html"
 
     def __init__(self):
@@ -10,7 +10,7 @@ class AgentingOne(Base):
 
 if __name__ == "__main__":
 
-    kk = AgentingOne()
+    kk = SuChao()
 
     for k, v in kk.team_dict.items():
         print(k)

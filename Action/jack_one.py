@@ -1,8 +1,8 @@
 from Action.Base import Base
 
 
-class AgentingOne(Base):
-    url = "http://zq.win007.com/cn/League/29.html"
+class JackOne(Base):
+    url = "http://zq.win007.com/cn/League/137.html"
 
     def __init__(self):
         self.team_dict = self.get_team_array(self.url)
@@ -10,7 +10,7 @@ class AgentingOne(Base):
 
 if __name__ == "__main__":
 
-    kk = AgentingOne()
+    kk = JackOne()
 
     for k, v in kk.team_dict.items():
         print(k)
