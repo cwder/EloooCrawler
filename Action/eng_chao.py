@@ -9,7 +9,7 @@ from Parser.game_parser import Parse
 from Public import const
 
 
-class EngGuan(Base):
+class EngChao(Base):
 
     url = "http://zq.win007.com/cn/League/36.html"
 
@@ -19,7 +19,7 @@ class EngGuan(Base):
 
 if __name__ == "__main__":
 
-    kk = EngGuan()
+    kk = EngChao()
 
     for k, v in kk.team_dict.items():
         print(k)

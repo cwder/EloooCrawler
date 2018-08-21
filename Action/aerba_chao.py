@@ -5,6 +5,7 @@ class AerbaChao(Base):
     url = "http://zq.win007.com/cn/SubLeague/315.html"
 
     def __init__(self):
+        print("AerbaChao")
         super(AerbaChao, self).__init__("阿尔巴尼亚超")
         self.team_dict = self.get_team_array(self.url)
 

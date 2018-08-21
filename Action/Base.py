@@ -249,7 +249,7 @@ class Base:
         if count_percent >= 0.6 or full_res >= 0.4:
             if final_data == keys[0]:
                 # print("以下可以进入判断条件：")
-                if full_res == 1:
+                if full_res >= 0.8:
                     print(self.my_name)
                     print(name)
         # print(keys[0], "   core: ", core, "others: ", others, " 百分比：", '%.2f%%' % (count_percent * 100), "全数：",

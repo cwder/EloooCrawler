@@ -6,6 +6,8 @@ class Korea(Base):
 
 
     def __init__(self):
+        print("Korea")
+        super(Korea, self).__init__("韩k")
         self.team_dict = self.get_team_array(self.url)
 
 
@@ -19,7 +21,7 @@ if __name__ == "__main__":
     for k , v in kk.team_dict.items():
         print(k)
         # print(kk.parse_fail_team(v))
-        print(kk.parse_fail_team(v))
+        print(kk.parse_team(v))
 
 
 

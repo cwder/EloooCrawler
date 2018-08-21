@@ -14,4 +14,4 @@ if __name__ == "__main__":
 
     for k, v in kk.team_dict.items():
         print(k)
-        print(kk.parse_fail_team(v))
+        print(kk.parse_team(v))
