@@ -10,6 +10,8 @@ from Public import const
 
 class Base:
 
+    def __init__(self,my_name):
+        self.my_name = my_name
 
     # 获取所以球队所有战绩列表,获取球队名，球队战绩的map
     def get_team_array(self,url):
@@ -248,6 +250,7 @@ class Base:
             if final_data == keys[0]:
                 # print("以下可以进入判断条件：")
                 if full_res == 1:
+                    print(self.my_name)
                     print(name)
         # print(keys[0], "   core: ", core, "others: ", others, " 百分比：", '%.2f%%' % (count_percent * 100), "全数：",
         #       no_match_full_data, "全百分比", '%.2f%%' % (full_res * 100))

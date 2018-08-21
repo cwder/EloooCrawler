@@ -5,8 +5,9 @@ class XiTwo(Base):
     url = "http://zq.win007.com/cn/SubLeague/33.html"
 
     def __init__(self):
+        super(XiTwo,self).__init__("西乙")
         self.team_dict = self.get_team_array(self.url)
-        print("西乙")
+
 
 if __name__ == "__main__":
 
