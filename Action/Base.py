@@ -163,6 +163,97 @@ class Base:
 
         return result
 
+    def parse_unique_team(self, array):
+        error_count = 0;
+        flag = False
+        is_fail_flag = False;
+        # 目前保持不败的场次
+        begin_no_fail_couint = 0
+        result = {}
+        for i in range(len(array)):
+            if array[i].win != 0:
+                if flag == False:
+                    is_fail_flag = True
+                    begin_no_fail_couint = begin_no_fail_couint + 1
+                    continue
+                # 代表不败的表式值：n场不败统计
+                error_count = error_count + 1;
+
+            else:
+                flag = True
+                if error_count == 0:
+                    continue
+                key = str(error_count) + "场不败次数"
+                value = result.get(error_count, 0)
+                # 代表表式值次数：n场不败的次数
+                value = value + 1
+                result[error_count] = value
+                error_count = 0
+        # 复制一个{不败场次，不败场次数}的map
+        result2 = deepcopy(result)
+        # 因为key是不败的表式值，从小到大排下序
+        keys = sorted(result2)
+        if is_fail_flag:
+            # print("该队可统计马上会败的可能性，已", begin_no_fail_couint, "场不败,百分比越高表示败的可能越大")
+
+            if (begin_no_fail_couint > keys[-1]):
+                # print("该队处于破记录中，可考虑投")
+                pass
+
+        for i in range(len(keys)):
+            # 当i为0时，统计keys[0]=1场不败次数。。。n场不败次数
+            # 当i为1时，统计keys[1]=2场不败次数。。。n场不败次数
+
+
+            self.cal_percent_un(result2, begin_no_fail_couint,array[i].name)
+            result2.pop(keys[i])
+
+        return result
+
+    def cal_percent_un(self, data, final_data,name):
+        # 按胜场类型区分的百分比
+        count_percent = 0
+        # 按特性场次，进行排序
+        keys = sorted(data)
+        # 符合条件的场次
+        core_data = 0;
+        # 其他不符合条件的场次
+        others = 0;
+        # 全量计算里不符合条件的所有场次
+        no_match_full_data = 0;
+        # 符合条件是胜负场序号
+        result_list = []
+
+        for i in range(len(keys)):
+
+            if i == 0:
+                # 第一个统计场次的数量
+                core = data[keys[i]];
+
+                if (len(keys) == 1):
+                    count_percent = core / core
+
+            else:
+                sum = data[keys[i]]
+                others = others + sum;
+                count = core + others;
+                count_percent = core / count
+
+                s = (keys[i] - keys[0]) * sum;
+                no_match_full_data = s + no_match_full_data
+
+        full_res = core / (no_match_full_data + core)
+
+        if count_percent >= 0.6 or full_res >= 0.4:
+            if final_data == keys[0]:
+                # print("以下可以进入判断条件：")
+                if full_res == 1:
+                    print(name)
+        # print(keys[0], "   core: ", core, "others: ", others, " 百分比：", '%.2f%%' % (count_percent * 100), "全数：",
+        #       no_match_full_data, "全百分比", '%.2f%%' % (full_res * 100))
+        # print("====")
+
+        return (keys[0], count_percent, full_res)
 
     # data：{不败场次，不败场次数}的map
     # final_data：现有的最大场

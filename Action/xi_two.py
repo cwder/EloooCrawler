@@ -6,7 +6,7 @@ class XiTwo(Base):
 
     def __init__(self):
         self.team_dict = self.get_team_array(self.url)
-
+        print("西乙")
 
 if __name__ == "__main__":
 
