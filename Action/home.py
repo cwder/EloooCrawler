@@ -6,10 +6,17 @@ from Action.eng_guan import EngGuan
 from Action.eng_jia import EngJia
 from Action.eng_three import EngThree
 from Action.germany_three import GermanyThree
+from Action.germany_two import GermanyTwo
+from Action.helan_one import HelanOne
+from Action.helan_two import HelanTwo
+from Action.japan_one import JapanOne
 from Action.japan_two import JapanTwo
 from Action.korea_k import Korea
+from Action.mexico import Mexico
+from Action.nuo_chao import NuoChao
 from Action.nuowei_two import NuoWeiTwo
 from Action.putaoya_chao import PuTaoChao
+from Action.russia_chao import RussuiaChao
 from Action.saerweiya_chao import SaierweiyaChao
 from Action.slowfuck_chao import SlowfuckChao
 from Action.white_russia_chao import WhiteRussiaChao
@@ -72,6 +79,24 @@ kk = JapanTwo()
 for k, v in kk.team_dict.items():
     kk.parse_unique_team(v)
 kk = Mexico()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = JapanOne()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = RussuiaChao()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = NuoChao()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = GermanyTwo()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = HelanOne()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = HelanTwo()
 for k, v in kk.team_dict.items():
     kk.parse_unique_team(v)
 
