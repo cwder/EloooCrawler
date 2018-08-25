@@ -5,6 +5,8 @@ class AustraliaOne(Base):
     url = "http://zq.win007.com/cn/SubLeague/2018-2019/273.html"
 
     def __init__(self):
+        print("AustraliaOne")
+        super(AustraliaOne, self).__init__("奥大利亚超")
         self.team_dict = self.get_team_array(self.url)
 
 

@@ -5,6 +5,8 @@ class Brazol(Base):
     url = "http://zq.win007.com/cn/League/4.html"
 
     def __init__(self):
+        print("Brazol")
+        super(Brazol, self).__init__("巴甲")
         self.team_dict = self.get_team_array(self.url)
 
 

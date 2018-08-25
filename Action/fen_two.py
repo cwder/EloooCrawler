@@ -6,6 +6,8 @@ class FenTwo(Base):
     url = "http://zq.win007.com/cn/SubLeague/212.html"
 
     def __init__(self):
+        print("FenTwo")
+        super(FenTwo, self).__init__("芬甲")
         self.team_dict = self.get_team_array(self.url)
 
 if __name__ == "__main__":

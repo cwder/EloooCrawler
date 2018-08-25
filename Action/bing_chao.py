@@ -5,6 +5,8 @@ class BingDdao(Base):
     url = "http://zq.win007.com/cn/SubLeague/166.html"
 
     def __init__(self):
+        print("BingDdao")
+        super(BingDdao, self).__init__("冰超")
         self.team_dict = self.get_team_array(self.url)
 
 

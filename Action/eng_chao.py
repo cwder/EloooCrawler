@@ -14,6 +14,8 @@ class EngChao(Base):
     url = "http://zq.win007.com/cn/League/36.html"
 
     def __init__(self):
+        print("EngChao")
+        super(EngChao, self).__init__("英超")
         self.team_dict = self.get_team_array(self.url)
 
 
