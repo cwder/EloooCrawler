@@ -5,6 +5,8 @@ class Bilishi(Base):
     url = "http://zq.win007.com/cn/SubLeague/5.html"
 
     def __init__(self):
+        print("Bilishi")
+        super(Bilishi, self).__init__("比甲")
         self.team_dict = self.get_team_array(self.url)
 
 

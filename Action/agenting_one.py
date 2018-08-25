@@ -2,7 +2,7 @@ from Action.Base import Base
 
 
 class AgentingOne(Base):
-    url = "http://zq.win007.com/cn/League/29.html"
+    url = "http://zq.win007.com/cn/SubLeague/2.html"
 
     def __init__(self):
         print("AgentingOne")

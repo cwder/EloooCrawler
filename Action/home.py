@@ -1,10 +1,13 @@
 from Action.aerba_chao import AerbaChao
 from Action.agenting_one import AgentingOne
 from Action.aodili_one import AodiliOne
+from Action.bilieshi_one import Bilishi
 from Action.brazil_two import BrazolTwo
 from Action.eng_guan import EngGuan
 from Action.eng_jia import EngJia
 from Action.eng_three import EngThree
+from Action.france_one import FranceOne
+from Action.germany_one import GermanyOne
 from Action.germany_three import GermanyThree
 from Action.germany_two import GermanyTwo
 from Action.helan_one import HelanOne
@@ -23,6 +26,7 @@ from Action.white_russia_chao import WhiteRussiaChao
 from Action.xi_jia import Xijia
 from Action.xi_two import XiTwo
 from Action.xila_chao import XilaChao
+from Action.zhili import Zhili
 
 kk = XiTwo()
 for k, v in kk.team_dict.items():
@@ -99,6 +103,19 @@ for k, v in kk.team_dict.items():
 kk = HelanTwo()
 for k, v in kk.team_dict.items():
     kk.parse_unique_team(v)
+kk = GermanyOne()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = Bilishi()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = FranceOne()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+kk = Zhili()
+for k, v in kk.team_dict.items():
+    kk.parse_unique_team(v)
+
 
 
 print("end")
