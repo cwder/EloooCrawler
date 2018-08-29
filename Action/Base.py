@@ -166,6 +166,10 @@ class Base:
         return result
 
     def parse_unique_team(self, array):
+
+        if len(array) < 220:
+            return
+
         error_count = 0;
         flag = False
         is_fail_flag = False;
